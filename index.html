@@ -13,55 +13,51 @@
   <body>
     <div id="root"></div>
     <script>
-      const landingSectionHashes = new Map([
-        ['#how', 'how'],
-        ['#attorneys', 'attorneys'],
-      ]);
+      (() => {
+        const landingSectionHashes = {
+          '#how': 'how',
+          '#attorneys': 'attorneys',
+        };
+        const pendingSection = landingSectionHashes[window.location.hash];
 
-      function scrollToLandingSection(targetId, attempts = 12) {
-        const target = document.getElementById(targetId);
-
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          return;
+        if (pendingSection) {
+          history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
         }
 
-        if (attempts > 0) {
-          requestAnimationFrame(() => scrollToLandingSection(targetId, attempts - 1));
-        }
-      }
+        function scrollToLandingSection(targetId, attempts = 20) {
+          const target = document.getElementById(targetId);
 
-      document.addEventListener(
-        'click',
-        (event) => {
-          const trigger = event.target.closest?.('a[href="#how"], a[href="#attorneys"]');
-
-          if (!trigger) {
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             return;
           }
 
-          event.preventDefault();
-          const targetId = landingSectionHashes.get(trigger.getAttribute('href'));
-          history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
-          scrollToLandingSection(targetId);
-        },
-        true,
-      );
-
-      function keepLandingSectionHashesOutOfTheRouter() {
-        const targetId = landingSectionHashes.get(window.location.hash);
-
-        if (!targetId) {
-          return;
+          if (attempts > 0) {
+            requestAnimationFrame(() => scrollToLandingSection(targetId, attempts - 1));
+          }
         }
 
-        history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
-        window.dispatchEvent(new HashChangeEvent('hashchange'));
-        scrollToLandingSection(targetId);
-      }
+        document.addEventListener(
+          'click',
+          (event) => {
+            const trigger = event.target.closest?.('a[href="#how"], a[href="#attorneys"]');
 
-      window.addEventListener('hashchange', keepLandingSectionHashesOutOfTheRouter);
-      keepLandingSectionHashesOutOfTheRouter();
+            if (!trigger) {
+              return;
+            }
+
+            event.preventDefault();
+            scrollToLandingSection(landingSectionHashes[trigger.getAttribute('href')]);
+          },
+          true,
+        );
+
+        if (pendingSection) {
+          window.addEventListener('load', () => scrollToLandingSection(pendingSection), {
+            once: true,
+          });
+        }
+      })();
     </script>
     <script type="module">
       const isLocalDev = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
