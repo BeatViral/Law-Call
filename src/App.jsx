@@ -450,6 +450,15 @@ function LandingPage() {
               <ChevronRight size={18} />
             </a>
           </div>
+          <GlassCard className="hero-business-note">
+            <Badge tone="green" icon={CircleDollarSign}>
+              Marketplace model
+            </Badge>
+            <strong>
+              Free for drivers. Paid by participating attorneys who want local visibility, postcode
+              coverage, and qualified consultation requests.
+            </strong>
+          </GlassCard>
           <div className="hero-proof">
             <span>
               <strong>$0</strong>
@@ -501,6 +510,32 @@ function LandingPage() {
         </p>
       </section>
 
+      <section className="content-section split-section">
+        <GlassCard className="driver-download-card">
+          <Badge tone="green" icon={Shield}>
+            Why drivers download
+          </Badge>
+          <h2>Drivers do not need another subscription.</h2>
+          <p>
+            Law Call is free to download and free to start a protected journey. If something
+            happens, they can activate Law Call, preserve the event, alert trusted contacts, and
+            connect with participating attorneys where available.
+          </p>
+        </GlassCard>
+        <GlassCard className="attorney-pay-card">
+          <Badge tone="purple" icon={BriefcaseBusiness}>
+            Why attorneys pay
+          </Badge>
+          <h2>Visibility at the exact moment drivers need legal guidance.</h2>
+          <p>
+            Law Call gives participating attorneys visibility at the exact moment drivers need
+            legal guidance. Attorneys can list by practice area and postcode, receive consultation
+            requests, review Incident Packets, and send representation offers when users request
+            follow-up help.
+          </p>
+        </GlassCard>
+      </section>
+
       <section id="how" className="content-section">
         <div className="section-heading">
           <span className="eyebrow">Before / During / After</span>
@@ -528,8 +563,8 @@ function LandingPage() {
           </Badge>
           <h3>High-intent consultation requests for participating attorneys.</h3>
           <p>
-            Attorneys can provide an included initial consultation and convert qualified incidents
-            into paid follow-up representation where appropriate.
+            Participating attorneys can offer an initial consultation at no upfront cost and
+            convert qualified incidents into paid follow-up representation where appropriate.
           </p>
           <div className="mini-metrics">
             <span>
@@ -575,7 +610,7 @@ function LandingPage() {
       <section className="content-section">
         <div className="section-heading">
           <span className="eyebrow">Core system</span>
-          <h2>Free for drivers. Monetized through attorney tools and sponsors.</h2>
+          <h2>Free for drivers. Built as an attorney-funded local listing marketplace.</h2>
         </div>
         <div className="feature-grid">
           {[
@@ -731,6 +766,11 @@ function DriverDashboard() {
     navigate('/journey');
   };
 
+  const simulateBluetoothStart = () => {
+    startJourney();
+    navigate('/journey');
+  };
+
   const launchEmergency = (type) => {
     createEmergencyIncident(type);
     navigate('/active');
@@ -774,6 +814,22 @@ function DriverDashboard() {
           <span>Your Journey Is Now Protected.</span>
           <Shield size={70} />
         </div>
+      </GlassCard>
+
+      <GlassCard className="auto-start-card">
+        <div>
+          <Badge tone="cyan" icon={BluetoothConnected}>
+            Native app demo
+          </Badge>
+          <h2>Auto-Start Journey Mode</h2>
+          <p>
+            In the native app, Law Call can arm Journey Mode when your phone connects to your car
+            Bluetooth.
+          </p>
+        </div>
+        <PrimaryButton onClick={simulateBluetoothStart} icon={BluetoothConnected}>
+          Simulate Car Bluetooth Connected
+        </PrimaryButton>
       </GlassCard>
 
       <div className="quick-actions">
@@ -1024,6 +1080,7 @@ function LawCallActive() {
           </Badge>
           <h1>Law Call Active</h1>
           <p>Stay calm. Legal guidance is connecting. Your location and incident record are being secured.</p>
+          <p className="emergency-alone-line">You are not alone.</p>
         </div>
 
         <GlassCard className="emergency-checklist">
@@ -1102,7 +1159,7 @@ function AttorneyConnected() {
     <LayoutPage
       eyebrow="Attorney Connected"
       title={callEnded ? 'Call Ended. Incident Packet Ready.' : 'Participating Attorney Matched'}
-      subtitle="Your membership experience includes this initial consultation where available. Follow-up legal work may require a separate agreement with the attorney."
+      subtitle="This participating attorney offers an initial consultation at no upfront cost, where available. Follow-up legal work may require a separate agreement with the attorney."
     >
       <div className="two-column attorney-connected-layout">
         <AttorneyCard />
@@ -1110,8 +1167,14 @@ function AttorneyConnected() {
           <Badge tone="cyan" icon={BadgeCheck}>
             Initial Consultation Included
           </Badge>
-          <h3>Your membership includes this initial consultation.</h3>
-          <p>Follow-up legal work may require a separate agreement with the attorney.</p>
+          <h3>
+            This participating attorney offers an initial consultation at no upfront cost, where
+            available.
+          </h3>
+          <p>
+            Your Law Call access includes an initial consultation with a participating attorney
+            where available. Follow-up legal work may require a separate agreement.
+          </p>
           {!callActive && !callEnded && (
             <div className="button-stack">
               <PrimaryButton onClick={() => setCallActive(true)} icon={PhoneCall}>
@@ -1210,7 +1273,7 @@ function IncidentPacket() {
     <LayoutPage
       eyebrow="Incident Packet Created"
       title="Incident Packet Created"
-      subtitle="Your stop has been documented and saved to your Law Call dashboard."
+      subtitle="The event is preserved. Your stop has been documented and saved to your Law Call dashboard."
       action={<Badge tone={incident.status === 'resolved' ? 'green' : 'red'}>{incident.status}</Badge>}
     >
       <div className="packet-hero">
@@ -1470,9 +1533,32 @@ function AttorneyDashboard() {
         </Badge>
         <h2>Law Call delivers high-intent roadside legal consultation requests.</h2>
         <p>
-          Participating attorneys can provide an included initial consultation and convert
+          Participating attorneys can offer an initial consultation at no upfront cost and convert
           qualified incidents into paid follow-up representation where appropriate.
         </p>
+      </GlassCard>
+
+      <GlassCard className="listing-coverage-card">
+        <div className="card-header-row">
+          <div>
+            <Badge tone="cyan" icon={LandPlot}>
+              Listing Coverage
+            </Badge>
+            <h2>Listing Coverage</h2>
+          </div>
+          <div className="button-row">
+            <SecondaryButton icon={Plus}>Add Postcode</SecondaryButton>
+            <SecondaryButton icon={Plus}>Add Practice Area</SecondaryButton>
+          </div>
+        </div>
+        <div className="coverage-grid">
+          <PacketField label="Practice Area" value="DUI" />
+          <PacketField label="ZIP/Postcode Coverage" value="90210, 90211, 90212, 90213, 90214" />
+          <PacketField label="Plan" value="Local Attorney Plan" />
+          <PacketField label="Listing Status" value="Active" />
+          <PacketField label="Monthly Fee" value="$19.95" />
+          <PacketField label="Consultation Requests This Month" value="14" />
+        </div>
       </GlassCard>
 
       <div className="two-column">
@@ -1650,8 +1736,8 @@ function PricingPage() {
   return (
     <LayoutPage
       eyebrow="Pricing"
-      title="Attorney-funded growth model"
-      subtitle="Drivers use Law Call for free. Revenue comes from attorney listings, local coverage, lead tools, and sponsor-safe placements."
+      title="Free for drivers. Built as an attorney-funded local listing marketplace."
+      subtitle="Drivers keep the $0 access card. The main revenue model is attorney listings, postcode coverage, local visibility, consultation requests, and sponsor-safe placements outside emergency mode."
     >
       <SponsorStrip />
       <GlassCard className="driver-free-card">
