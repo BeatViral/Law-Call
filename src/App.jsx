@@ -405,6 +405,12 @@ function LandingPage() {
     navigate('/dashboard');
   };
 
+  const tryDemoJourney = () => {
+    createDemoUser('driver');
+    startJourney();
+    navigate('/journey');
+  };
+
   return (
     <div className="landing">
       <header className="landing-nav">
@@ -510,6 +516,68 @@ function LandingPage() {
         </p>
       </section>
 
+      <section id="how" className="content-section how-section">
+        <div className="section-heading how-heading">
+          <span className="eyebrow">How it works</span>
+          <h2>How Law Call Works</h2>
+          <p>
+            Before the drive, during the stop, and after the incident — Law Call turns a stressful
+            roadside moment into a protected, documented process.
+          </p>
+        </div>
+        <div className="how-steps">
+          <HowStepCard
+            number="01"
+            icon={Car}
+            title="Start Your Journey"
+            copy='Law Call can arm Journey Mode when your drive begins. The app confirms: "Your Journey Is Now Protected." No recording starts. No attorney is called. Help is simply ready if you need it.'
+            chips={['Journey Mode Active', 'Location Ready', 'Emergency Button Ready']}
+          />
+          <HowStepCard
+            number="02"
+            icon={Siren}
+            title="Tap Law Call If Something Happens"
+            copy={'If you are stopped, in an accident, or facing a roadside legal issue, tap "I\'m Being Stopped." Law Call Active starts the protection flow.'}
+            chips={['Incident Created', 'Recording Status On', 'Trusted Contacts Alerted']}
+          />
+          <HowStepCard
+            number="03"
+            icon={BriefcaseBusiness}
+            title="Connect With a Participating Attorney"
+            copy="Law Call routes you to participating attorneys by practice area and postcode/ZIP where available. Initial consultation access may be available at no upfront cost. Follow-up representation requires a separate agreement."
+            chips={['Attorney Matching', 'Initial Consultation', 'Where Available']}
+          />
+          <HowStepCard
+            number="04"
+            icon={FileCheck2}
+            title="Create an Incident Packet"
+            copy="After the event, Law Call saves the key details in an Incident Packet: time, location, recording status, attorney connection, trusted-contact alerts, notes, documents, and follow-up actions."
+            chips={['Time & Location', 'Ticket Upload', 'Follow-Up Actions']}
+          />
+        </div>
+        <GlassCard className="how-callout">
+          <div>
+            <Badge tone="green" icon={CircleDollarSign}>
+              Free driver access
+            </Badge>
+            <h3>Free for drivers. Attorney-funded marketplace.</h3>
+            <p>
+              Drivers can use Law Call for free. Attorneys pay for local listing visibility by
+              practice area and postcode/ZIP, and users decide whether to request follow-up
+              representation after the initial consultation.
+            </p>
+          </div>
+          <div className="button-row">
+            <PrimaryButton onClick={tryDemoJourney} icon={Car}>
+              Try Demo Journey
+            </PrimaryButton>
+            <SecondaryButton to="/attorney" icon={BriefcaseBusiness}>
+              View Attorney Network
+            </SecondaryButton>
+          </div>
+        </GlassCard>
+      </section>
+
       <section className="content-section split-section">
         <GlassCard className="driver-download-card">
           <Badge tone="green" icon={Shield}>
@@ -536,7 +604,7 @@ function LandingPage() {
         </GlassCard>
       </section>
 
-      <section id="how" className="content-section">
+      <section className="content-section">
         <div className="section-heading">
           <span className="eyebrow">Before / During / After</span>
           <h2>Built around the three moments that matter.</h2>
@@ -661,6 +729,26 @@ function FeatureCard({ icon: Icon, title, text }) {
       </div>
       <h3>{title}</h3>
       <p>{text}</p>
+    </GlassCard>
+  );
+}
+
+function HowStepCard({ number, icon: Icon, title, copy, chips }) {
+  return (
+    <GlassCard className="how-step-card">
+      <div className="how-step-top">
+        <span className="how-number">{number}</span>
+        <span className="how-icon">
+          <Icon size={24} />
+        </span>
+      </div>
+      <h3>{title}</h3>
+      <p>{copy}</p>
+      <div className="how-chip-list">
+        {chips.map((chip) => (
+          <span key={chip}>{chip}</span>
+        ))}
+      </div>
     </GlassCard>
   );
 }
