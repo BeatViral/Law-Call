@@ -429,7 +429,7 @@ function LandingPage() {
 
       <section className="landing-hero">
         <div className="hero-media" aria-hidden="true">
-          <img src="/lawcall-hero.png" alt="" />
+          <img src="lawcall-hero.png" alt="" />
         </div>
         <div className="hero-copy">
           <Badge tone="red" icon={Siren}>
