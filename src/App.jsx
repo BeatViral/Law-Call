@@ -656,23 +656,23 @@ function LandingPage() {
           <span className="eyebrow">How it works</span>
           <h2>How Law Call Works</h2>
           <p>
-            Before the drive, during the stop, and after the incident - Law Call turns a stressful
+            Before the drive, during the stop, and after the incident — Law Call turns a stressful
             roadside moment into a protected, documented process.
           </p>
         </div>
-        <div className="how-steps">
+        <div className="how-steps" role="list" aria-label="Four-step Law Call journey">
           <HowStepCard
             number="01"
             icon={Car}
             title="Start Your Journey"
-            copy='Law Call can arm Journey Mode when your drive begins. The app confirms: "Your Journey Is Now Protected." No recording starts. No attorney is called. Help is simply ready if you need it.'
+            copy="Law Call can arm Journey Mode when your drive begins. The app confirms: “Your Journey Is Now Protected.” No recording starts. No attorney is called. Help is simply ready if you need it."
             chips={['Journey Mode Active', 'Location Ready', 'Emergency Button Ready']}
           />
           <HowStepCard
             number="02"
             icon={Siren}
             title="Tap Law Call If Something Happens"
-            copy={'If you are stopped, in an accident, or facing a roadside legal issue, tap "I\'m Being Stopped." Law Call Active starts the protection flow.'}
+            copy="If you are stopped, in an accident, or facing a roadside legal issue, tap “I’m Being Stopped.” Law Call Active starts the protection flow."
             chips={['Incident Created', 'Recording Status On', 'Trusted Contacts Alerted']}
           />
           <HowStepCard
@@ -1130,15 +1130,17 @@ function FeatureCard({ icon: Icon, title, text }) {
 
 function HowStepCard({ number, icon: Icon, title, copy, chips }) {
   return (
-    <GlassCard className="how-step-card">
+    <GlassCard className="how-step-card" role="listitem">
       <div className="how-step-top">
-        <span className="how-number">{number}</span>
+        <span className="how-number" aria-label={`Step ${number}`}>
+          {number}
+        </span>
         <span className="how-icon">
           <Icon size={24} />
         </span>
       </div>
       <h3>{title}</h3>
-      <p>{copy}</p>
+      <p className="how-step-copy">{copy}</p>
       <div className="how-chip-list">
         {chips.map((chip) => (
           <span key={chip}>{chip}</span>

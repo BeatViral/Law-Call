@@ -429,6 +429,7 @@ select:focus {
 
 .how-section {
   position: relative;
+  scroll-margin-top: 92px;
   background:
     radial-gradient(circle at 12% 18%, rgba(55, 216, 255, 0.12), transparent 30%),
     radial-gradient(circle at 90% 25%, rgba(140, 77, 255, 0.1), transparent 32%);
@@ -448,46 +449,54 @@ select:focus {
 .how-steps {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1rem;
-  margin-top: 2rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem;
+  max-width: 1280px;
+  margin-top: 2.2rem;
 }
 
 .how-steps::before {
   content: "";
   position: absolute;
-  left: 5%;
-  right: 5%;
-  top: 45px;
-  height: 2px;
-  background: linear-gradient(90deg, rgba(55, 216, 255, 0), rgba(55, 216, 255, 0.85), rgba(255, 40, 79, 0.52), rgba(55, 216, 255, 0));
-  box-shadow: 0 0 28px rgba(55, 216, 255, 0.45);
+  inset: 54px 8% auto;
+  height: calc(100% - 108px);
+  border: 1px solid rgba(55, 216, 255, 0.28);
+  border-left: 0;
+  border-right: 0;
+  background:
+    linear-gradient(90deg, rgba(55, 216, 255, 0), rgba(55, 216, 255, 0.62), rgba(255, 40, 79, 0.42), rgba(55, 216, 255, 0)),
+    linear-gradient(180deg, transparent 49%, rgba(55, 216, 255, 0.55) 50%, transparent 51%);
+  box-shadow: 0 0 34px rgba(55, 216, 255, 0.3);
   z-index: 0;
 }
 
 .how-step-card {
   display: grid;
-  gap: 0.9rem;
-  min-height: 395px;
+  gap: 1rem;
+  min-height: 330px;
   align-content: start;
-  border-color: rgba(55, 216, 255, 0.28);
+  border-color: rgba(55, 216, 255, 0.38);
   background:
-    linear-gradient(150deg, rgba(55, 216, 255, 0.12), rgba(255, 255, 255, 0.025)),
-    rgba(7, 19, 32, 0.84);
+    linear-gradient(150deg, rgba(55, 216, 255, 0.16), rgba(255, 40, 79, 0.045)),
+    rgba(7, 19, 32, 0.9);
+  box-shadow:
+    var(--shadow),
+    0 0 42px rgba(55, 216, 255, 0.08);
   z-index: 1;
 }
 
 .how-step-card h3 {
-  min-height: 54px;
   margin-bottom: 0;
-  font-size: 1.28rem;
+  font-size: clamp(1.25rem, 2.2vw, 1.9rem);
   text-transform: uppercase;
 }
 
-.how-step-card p {
+.how-step-copy {
   margin-bottom: 0;
-  font-size: 0.92rem;
-  line-height: 1.55;
+  color: #d9ebf5;
+  font-size: 0.98rem;
+  font-weight: 620;
+  line-height: 1.58;
 }
 
 .how-step-top {
@@ -498,10 +507,20 @@ select:focus {
 }
 
 .how-number {
-  color: rgba(245, 251, 255, 0.18);
-  font-size: 2.25rem;
+  display: inline-grid;
+  min-width: 74px;
+  min-height: 54px;
+  place-items: center;
+  border: 1px solid rgba(55, 216, 255, 0.55);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(135deg, rgba(55, 216, 255, 0.22), rgba(21, 119, 255, 0.08)),
+    rgba(1, 7, 14, 0.72);
+  color: #f5fbff;
+  font-size: 1.55rem;
   font-weight: 950;
   line-height: 1;
+  box-shadow: 0 0 26px rgba(55, 216, 255, 0.18);
 }
 
 .how-icon {
@@ -2103,10 +2122,6 @@ select:focus {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .how-steps::before {
-    display: none;
-  }
-
   .status-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -2255,6 +2270,10 @@ select:focus {
   .how-steps {
     gap: 0.8rem;
     grid-template-columns: 1fr;
+  }
+
+  .how-steps::before {
+    display: none;
   }
 
   .how-step-card {
