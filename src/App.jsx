@@ -74,6 +74,118 @@ const navItems = [
   { to: '/settings', label: 'Account', icon: LockKeyhole },
 ];
 
+const attorneyValueCards = [
+  {
+    title: 'Local visibility by postcode/ZIP',
+    text: 'Show up in the local coverage areas where your firm wants consultation requests.',
+    icon: MapPin,
+  },
+  {
+    title: 'Practice-area placement',
+    text: 'List for the roadside matters you actually handle: traffic, DUI, accident, citations, and defense.',
+    icon: BriefcaseBusiness,
+  },
+  {
+    title: 'High-intent consultation requests',
+    text: 'Meet drivers at the moment legal need begins, not days later after they have already shopped around.',
+    icon: PhoneCall,
+  },
+  {
+    title: 'Incident Packet access',
+    text: 'Review structured incident details, timeline, location, documents, notes, and follow-up context.',
+    icon: FileCheck2,
+  },
+  {
+    title: 'Follow-up representation opportunities',
+    text: 'Send a representation offer when a user asks for paid help beyond the initial consultation.',
+    icon: FilePenLine,
+  },
+  {
+    title: 'Availability-based routing',
+    text: 'Turn availability on or off so requests can flow toward participating attorneys who are ready.',
+    icon: Clock3,
+  },
+];
+
+const attorneySalesPlans = [
+  {
+    name: 'Free Starter',
+    price: '$0',
+    cadence: '/month',
+    features: [
+      '1 practice-area listing',
+      '1 postcode/ZIP',
+      'Basic profile',
+      'Manual availability toggle',
+    ],
+  },
+  {
+    name: 'Local Attorney',
+    price: '$19.95',
+    cadence: '/month',
+    featured: true,
+    features: [
+      '1 practice-area listing',
+      'Up to 5 postcodes',
+      'Consultation request inbox',
+      'Incident Packet preview',
+      'Follow-up lead access',
+    ],
+  },
+  {
+    name: 'Growth',
+    price: '$49.95',
+    cadence: '/month',
+    features: [
+      'Up to 3 practice areas',
+      'Up to 15 postcodes',
+      'Priority visibility where available',
+      'Ticket/citation follow-up leads',
+      'Profile analytics',
+    ],
+  },
+  {
+    name: 'Territory',
+    price: '$99.95',
+    cadence: '/month',
+    features: [
+      'Up to 5 practice areas',
+      'Up to 50 postcodes',
+      'Firm profile',
+      'Advanced lead dashboard',
+      'Call performance stats',
+    ],
+  },
+  {
+    name: 'Firm / Regional',
+    price: 'Custom',
+    cadence: '',
+    features: [
+      'Multi-attorney firm account',
+      'Regional coverage',
+      'Sponsored placement',
+      'Advanced reporting',
+    ],
+  },
+];
+
+const listingExamples = [
+  ['DUI Attorney', '90210'],
+  ['Traffic Ticket Attorney', '90211'],
+  ['Accident Attorney', '90212'],
+  ['Criminal Defense Attorney', '90213'],
+];
+
+const representationFlow = [
+  'Driver activates Law Call',
+  'Attorney receives request',
+  'Initial consultation',
+  'Incident Packet',
+  'Representation offer',
+  'Agreement signed',
+  'Payment processed',
+];
+
 const formatDate = (date) =>
   new Intl.DateTimeFormat('en-US', {
     month: 'short',
@@ -92,6 +204,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+      <Route path="/attorneys" element={<AttorneyAcquisitionPage />} />
       <Route path="/login" element={<DemoLogin />} />
       <Route element={<AppShell />}>
         <Route path="/dashboard" element={<DriverDashboard />} />
@@ -397,8 +510,36 @@ function DangerButton({ children, onClick, className = '', icon: Icon = Siren })
   );
 }
 
+function PublicHeader({ onHowClick }) {
+  return (
+    <header className="landing-nav">
+      <Link className="brand-lockup" to="/">
+        <span className="brand-mark">
+          <Shield size={24} />
+        </span>
+        <span>
+          <strong>Law Call</strong>
+          <small>Roadside legal protection</small>
+        </span>
+      </Link>
+      <nav>
+        <Link to="/">Home</Link>
+        <button type="button" onClick={onHowClick}>
+          How It Works
+        </button>
+        <Link to="/attorneys">For Attorneys</Link>
+        <Link to="/pricing">Pricing</Link>
+        <Link className="nav-login" to="/login">
+          Demo
+        </Link>
+      </nav>
+    </header>
+  );
+}
+
 function LandingPage() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const startDemo = () => {
     createDemoUser('driver');
@@ -411,27 +552,21 @@ function LandingPage() {
     navigate('/journey');
   };
 
+  const scrollToSection = (sectionId) => {
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  useEffect(() => {
+    const sectionId = location.state?.scrollTo;
+    if (!sectionId) return undefined;
+
+    const frame = requestAnimationFrame(() => scrollToSection(sectionId));
+    return () => cancelAnimationFrame(frame);
+  }, [location.state?.scrollTo]);
+
   return (
     <div className="landing">
-      <header className="landing-nav">
-        <Link className="brand-lockup" to="/">
-          <span className="brand-mark">
-            <Shield size={24} />
-          </span>
-          <span>
-            <strong>Law Call</strong>
-            <small>Roadside legal protection</small>
-          </span>
-        </Link>
-        <nav>
-          <a href="#how">How it works</a>
-          <a href="#attorneys">Attorneys</a>
-          <Link to="/pricing">Pricing</Link>
-          <Link className="nav-login" to="/login">
-            Start Demo
-          </Link>
-        </nav>
-      </header>
+      <PublicHeader onHowClick={() => scrollToSection('how')} />
 
       <section className="landing-hero">
         <div className="hero-media" aria-hidden="true">
@@ -451,10 +586,10 @@ function LandingPage() {
             <PrimaryButton onClick={startDemo} icon={Shield}>
               Start Demo
             </PrimaryButton>
-            <a className="secondary-button" href="#how">
+            <button className="secondary-button" type="button" onClick={() => scrollToSection('how')}>
               See How It Works
               <ChevronRight size={18} />
-            </a>
+            </button>
           </div>
           <GlassCard className="hero-business-note">
             <Badge tone="green" icon={CircleDollarSign}>
@@ -521,7 +656,7 @@ function LandingPage() {
           <span className="eyebrow">How it works</span>
           <h2>How Law Call Works</h2>
           <p>
-            Before the drive, during the stop, and after the incident — Law Call turns a stressful
+            Before the drive, during the stop, and after the incident - Law Call turns a stressful
             roadside moment into a protected, documented process.
           </p>
         </div>
@@ -571,7 +706,7 @@ function LandingPage() {
             <PrimaryButton onClick={tryDemoJourney} icon={Car}>
               Try Demo Journey
             </PrimaryButton>
-            <SecondaryButton to="/attorney" icon={BriefcaseBusiness}>
+            <SecondaryButton to="/attorneys" icon={BriefcaseBusiness}>
               View Attorney Network
             </SecondaryButton>
           </div>
@@ -711,13 +846,273 @@ function LandingPage() {
             attorneys can convert appropriate incidents into paid representation with a separate
             agreement.
           </p>
-          <SecondaryButton to="/attorney" icon={LandPlot}>
+          <SecondaryButton to="/attorneys" icon={LandPlot}>
             View Attorney Network
           </SecondaryButton>
         </GlassCard>
         <LegalDisclaimer />
       </section>
     </div>
+  );
+}
+
+function AttorneyAcquisitionPage() {
+  const navigate = useNavigate();
+
+  const goToHowItWorks = () => {
+    navigate('/', { state: { scrollTo: 'how' } });
+  };
+
+  const joinAttorneyNetwork = () => {
+    createDemoUser('attorney');
+    navigate('/attorney');
+  };
+
+  const scrollToPlans = () => {
+    document.getElementById('attorney-plans')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  return (
+    <div className="landing attorney-sales-page">
+      <PublicHeader onHowClick={goToHowItWorks} />
+
+      <section className="attorney-sales-hero">
+        <div className="attorney-sales-copy">
+          <Badge tone="purple" icon={BriefcaseBusiness}>
+            Law Call Attorney Network
+          </Badge>
+          <h1>Get discovered at the moment drivers need legal help.</h1>
+          <p>
+            Law Call connects drivers with participating attorneys during traffic stops, accidents,
+            citations, DUI concerns, and roadside legal incidents. Attorneys list by practice area
+            and postcode/ZIP, receive consultation requests, review Incident Packets, and convert
+            qualified users into representation where appropriate.
+          </p>
+          <div className="hero-actions">
+            <PrimaryButton onClick={joinAttorneyNetwork} icon={Handshake}>
+              Join Attorney Network
+            </PrimaryButton>
+            <SecondaryButton onClick={scrollToPlans} icon={CircleDollarSign}>
+              View Listing Plans
+            </SecondaryButton>
+          </div>
+        </div>
+
+        <GlassCard className="attorney-hero-panel">
+          <Badge tone="cyan" icon={Gauge}>
+            Attorney demand engine
+          </Badge>
+          <div className="attorney-hero-metrics">
+            <span>
+              <strong>ZIP</strong>
+              Local coverage
+            </span>
+            <span>
+              <strong>DUI</strong>
+              Practice placement
+            </span>
+            <span>
+              <strong>Packet</strong>
+              Incident context
+            </span>
+          </div>
+          <div className="attorney-request-preview">
+            <span className="status-dot" />
+            <div>
+              <strong>Incoming consultation request</strong>
+              <small>Traffic stop - 90210 - Incident Packet available</small>
+            </div>
+          </div>
+        </GlassCard>
+      </section>
+
+      <section className="content-section attorney-sales-section">
+        <div className="section-heading">
+          <span className="eyebrow">Lead economics</span>
+          <h2>The Problem With Traditional Legal Leads</h2>
+          <p>
+            Attorneys spend heavily on Google Ads, SEO, directories, referral services, and cold
+            leads. But many inquiries are low-intent, price-shopping, or too late in the decision
+            process. Law Call creates visibility at the moment legal need begins.
+          </p>
+        </div>
+        <div className="lead-problem-grid">
+          <GlassCard>
+            <h3>Search ads are expensive.</h3>
+            <p>Traffic, DUI, accident, and criminal defense keywords can get crowded fast.</p>
+          </GlassCard>
+          <GlassCard>
+            <h3>Directories feel passive.</h3>
+            <p>Most directory leads arrive after users have already compared multiple firms.</p>
+          </GlassCard>
+          <GlassCard>
+            <h3>Cold leads waste time.</h3>
+            <p>Law Call is built around timely consultation intent and structured incident context.</p>
+          </GlassCard>
+        </div>
+      </section>
+
+      <section className="content-section split-section">
+        <div>
+          <span className="eyebrow">The Law Call Moment</span>
+          <h2>The Law Call Moment</h2>
+          <p>
+            A driver is stopped, ticketed, involved in an accident, or facing a roadside legal
+            issue. Law Call helps them stay calm, document the event, alert trusted contacts, and
+            connect with participating attorneys where available.
+          </p>
+        </div>
+        <GlassCard className="lawcall-moment-card">
+          {['Traffic stop', 'Citation uploaded', 'Accident help', 'DUI concern'].map((item) => (
+            <div key={item}>
+              <Badge tone="blue" icon={Siren}>
+                {item}
+              </Badge>
+              <span>Attorney consultation path opens where available.</span>
+            </div>
+          ))}
+        </GlassCard>
+      </section>
+
+      <section className="content-section">
+        <div className="section-heading">
+          <span className="eyebrow">Attorney-side revenue</span>
+          <h2>Why Attorneys Pay</h2>
+          <p>A local listing marketplace for high-intent roadside legal requests.</p>
+        </div>
+        <div className="attorney-value-grid">
+          {attorneyValueCards.map(({ title, text, icon: Icon }) => (
+            <FeatureCard key={title} icon={Icon} title={title} text={text} />
+          ))}
+        </div>
+      </section>
+
+      <section className="content-section listing-showcase">
+        <div className="section-heading">
+          <span className="eyebrow">How Attorney Listings Work</span>
+          <h2>How Attorney Listings Work</h2>
+          <p>1 practice area + 1 postcode free. Expand coverage as you grow.</p>
+        </div>
+        <div className="listing-example-grid">
+          {listingExamples.map(([practice, postcode]) => (
+            <GlassCard key={`${practice}-${postcode}`} className="listing-example-card">
+              <Badge tone="cyan" icon={MapPin}>
+                {postcode}
+              </Badge>
+              <h3>{practice}</h3>
+              <p>Example local listing placement for participating attorneys.</p>
+            </GlassCard>
+          ))}
+        </div>
+      </section>
+
+      <section id="attorney-plans" className="content-section">
+        <div className="section-heading">
+          <span className="eyebrow">Listing plans</span>
+          <h2>Attorney Plans</h2>
+          <p>Start free, then buy the local coverage that matches your firm.</p>
+        </div>
+        <div className="attorney-sales-pricing-grid">
+          {attorneySalesPlans.map((plan) => (
+            <AttorneySalesPlanCard key={plan.name} plan={plan} />
+          ))}
+        </div>
+      </section>
+
+      <section className="content-section split-section">
+        <GlassCard className="representation-flow-card">
+          <Badge tone="green" icon={FilePenLine}>
+            From Consultation to Representation
+          </Badge>
+          <div className="representation-flow">
+            {representationFlow.map((step) => (
+              <span key={step}>{step}</span>
+            ))}
+          </div>
+        </GlassCard>
+        <div>
+          <span className="eyebrow">Representation flow</span>
+          <h2>From Consultation to Representation</h2>
+          <p>
+            Participating attorneys may offer an initial consultation at no upfront cost. If the
+            user chooses to hire the attorney, follow-up representation requires a separate
+            attorney-client agreement and payment.
+          </p>
+        </div>
+      </section>
+
+      <section className="content-section attorney-dashboard-preview-section">
+        <div className="section-heading">
+          <span className="eyebrow">Revenue operations</span>
+          <h2>Attorney Dashboard Preview</h2>
+          <p>Built for availability, coverage, packets, offers, and paid follow-up.</p>
+        </div>
+        <GlassCard className="attorney-dashboard-preview">
+          <div className="card-header-row">
+            <div>
+              <Badge tone="purple" icon={BriefcaseBusiness}>
+                Demo firm dashboard
+              </Badge>
+              <h3>Mitchell Roadside Legal Group</h3>
+            </div>
+            <button className="availability-toggle is-on" type="button">
+              <span />
+              Available
+            </button>
+          </div>
+          <div className="coverage-grid">
+            <PacketField label="Practice area" value="DUI, Traffic, Accident" />
+            <PacketField label="Postcode coverage" value="90210, 90211, 90212, 90213, 90214" />
+            <PacketField label="Incoming requests" value="14 this month" />
+            <PacketField label="Incident Packets" value="8 available" />
+            <PacketField label="Representation offers" value="5 sent" />
+            <PacketField label="Agreement/payment status" value="2 completed, 3 pending" />
+          </div>
+        </GlassCard>
+      </section>
+
+      <section className="content-section">
+        <GlassCard className="legal-card attorney-ethics-card">
+          <Badge tone="cyan" icon={LockKeyhole}>
+            Ethics-Safe Disclaimer
+          </Badge>
+          <p>
+            Attorney listings are paid advertising/listing placements. Law Call does not rank
+            attorneys as "best," does not guarantee clients, and does not provide legal advice.
+            Users choose whether to contact or hire a participating attorney. Attorney availability
+            and laws vary by jurisdiction.
+          </p>
+        </GlassCard>
+      </section>
+    </div>
+  );
+}
+
+function AttorneySalesPlanCard({ plan }) {
+  return (
+    <GlassCard className={`attorney-plan-card ${plan.featured ? 'featured' : ''}`}>
+      {plan.featured && (
+        <Badge tone="red" icon={Zap}>
+          Best local start
+        </Badge>
+      )}
+      <h3>{plan.name}</h3>
+      <div className="price-line">
+        <strong>{plan.price}</strong>
+        <span>{plan.cadence}</span>
+      </div>
+      <ul>
+        {plan.features.map((feature) => (
+          <li key={feature}>
+            <Check size={16} />
+            {feature}
+          </li>
+        ))}
+      </ul>
+      <PrimaryButton to="/login" icon={ChevronRight}>
+        Join Attorney Network
+      </PrimaryButton>
+    </GlassCard>
   );
 }
 
