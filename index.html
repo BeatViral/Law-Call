@@ -12,6 +12,18 @@
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <script type="module">
+      const isLocalDev = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+
+      if (isLocalDev) {
+        await import('/src/main.jsx');
+      } else {
+        const stylesheet = document.createElement('link');
+        stylesheet.rel = 'stylesheet';
+        stylesheet.href = './assets/app.css';
+        document.head.appendChild(stylesheet);
+        await import('./assets/app.js');
+      }
+    </script>
   </body>
 </html>
