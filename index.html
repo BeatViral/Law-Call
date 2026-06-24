@@ -18,6 +18,36 @@
         ['#attorneys', 'attorneys'],
       ]);
 
+      function scrollToLandingSection(targetId, attempts = 12) {
+        const target = document.getElementById(targetId);
+
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          return;
+        }
+
+        if (attempts > 0) {
+          requestAnimationFrame(() => scrollToLandingSection(targetId, attempts - 1));
+        }
+      }
+
+      document.addEventListener(
+        'click',
+        (event) => {
+          const trigger = event.target.closest?.('a[href="#how"], a[href="#attorneys"]');
+
+          if (!trigger) {
+            return;
+          }
+
+          event.preventDefault();
+          const targetId = landingSectionHashes.get(trigger.getAttribute('href'));
+          history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+          scrollToLandingSection(targetId);
+        },
+        true,
+      );
+
       function keepLandingSectionHashesOutOfTheRouter() {
         const targetId = landingSectionHashes.get(window.location.hash);
 
@@ -26,10 +56,8 @@
         }
 
         history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
-
-        requestAnimationFrame(() => {
-          document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
+        window.dispatchEvent(new HashChangeEvent('hashchange'));
+        scrollToLandingSection(targetId);
       }
 
       window.addEventListener('hashchange', keepLandingSectionHashesOutOfTheRouter);
